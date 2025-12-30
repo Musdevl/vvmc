@@ -15,7 +15,7 @@ import { Component, Output, EventEmitter } from '@angular/core';
         </h1>
 
         <p class="description">
-          Estimez le niveau de connaissance<br />
+          Estimez le niveau de connaissance :<br />
           de votre coéquipier et marquez des points !
         </p>
 
