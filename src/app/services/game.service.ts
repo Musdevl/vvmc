@@ -32,16 +32,30 @@ export class GameService {
   };
 
   readonly MAX_ROUNDS = 10;
+
+  private allThemes: string[] = [];
   private availableThemes: string[] = [];
+
 
   constructor() {
     this.initThemes();
   }
 
   initThemes() {
-    const themesSet = new Set(QUESTIONS.map(q => q.theme));
-    this.availableThemes = Array.from(themesSet);
+    const themesSet = new Set(
+      QUESTIONS.map(q => q.theme.trim())
+    );
+    this.allThemes = Array.from(themesSet);
   }
+
+  private shuffleArray<T>(arr: T[]): T[] {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+
 
   setupGame(teamNames: string[]) {
     this.teams = teamNames.map(name => ({
@@ -62,16 +76,25 @@ export class GameService {
       currentTheme: null,
       phase: 'estimation'
     };
+
     this.teams.forEach(t => t.score = 0);
+
+    // 🔥 IMPORTANT : tous les thèmes redeviennent disponibles
+    this.availableThemes = this.shuffleArray([...this.allThemes]);
   }
+
 
   getCurrentTeam(): Team {
     return this.teams[this.gameState.currentTeamIndex];
   }
 
   startTurn() {
-    const randomTheme = this.availableThemes[Math.floor(Math.random() * this.availableThemes.length)];
-    this.gameState.currentTheme = randomTheme;
+    if (this.availableThemes.length === 0) {
+      // sécurité : au cas où la partie dépasse le nombre de thèmes
+      this.availableThemes = this.shuffleArray([...this.allThemes]);
+    }
+
+    this.gameState.currentTheme = this.availableThemes.pop()!;
     this.gameState.phase = 'estimation';
   }
 

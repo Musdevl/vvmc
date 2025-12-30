@@ -11,7 +11,7 @@ import { Component, Output, EventEmitter } from '@angular/core';
 
         <h1 class="title">
           Vous vous mettez<br />
-          combien ?
+          combien ? 2
         </h1>
 
         <p class="description">
